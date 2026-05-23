@@ -1,6 +1,10 @@
 import { pool } from './../../db';
 import type { IUser } from "../../types";
+
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken';
+import { config } from '../../config';
+
 const insertUserIntoDB = async (payload: any)=>{
     const { name, email, password, role } = payload;
   const checkExistence = await pool.query(
@@ -24,18 +28,34 @@ const insertUserIntoDB = async (payload: any)=>{
   return result;
 }
 
-const loginIntoDB = async (payload: any)=>{
+const loginIntoDB = async (payload: {email: string, password: string})=>{
 
-    const {email, password} = payload;
-    const retriveData = await pool.query(`
-        SELECT email, password from users where email=$1`, [email])
     
-    const data = retriveData.rows[0]
-    const matchPassowrd = await bcrypt.compare(password, data.password);
+    const retriveData = await pool.query(`
+        SELECT * from users where email=$1`, [payload.email])
+    
+    const user = retriveData.rows[0]
+    const matchPassowrd = await bcrypt.compare(payload.password, user.password);
   if (!matchPassowrd) {
     throw new Error("Invalid password");
   }
-  
+  const jwtPayload = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+  };
+  const {
+    password, ...userWithoutPass
+  } = user;
+  const accessToken = jwt.sign(jwtPayload, config.jwt, {
+    expiresIn: '1d'
+  }) 
+  return {
+    data: {toke: accessToken,
+    user: userWithoutPass
+}
+  }
 }
 export const authService = {
     insertUserIntoDB,
