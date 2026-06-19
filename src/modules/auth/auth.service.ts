@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 import { config } from '../../config';
 
 const insertUserIntoDB = async (payload: any)=>{
-    const { name, email, password, role } = payload;
+  const { name, email, password, role } = payload;
   const checkExistence = await pool.query(
     "SELECT * FROM users WHERE email = $1",
     [email]
@@ -21,7 +21,7 @@ const insertUserIntoDB = async (payload: any)=>{
 
   // insert user
   const result = await pool.query(
-    "INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4) RETURNING *",
+    "INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3,  COALESCE($4, 'contributor')) RETURNING *",
     [name, email, hashedPassword, role]
   );
 
