@@ -16,10 +16,10 @@ const insertUserIntoDB = async (payload: any)=>{
     throw new Error("User already exists");
   }
 
-  // hash password
+ 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  // insert user
+
   const result = await pool.query(
     "INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3,  COALESCE($4, 'contributor')) RETURNING *",
     [name, email, hashedPassword, role]
@@ -52,7 +52,7 @@ const loginIntoDB = async (payload: {email: string, password: string})=>{
     expiresIn: '1d'
   }) 
   return {
-    data: {toke: accessToken,
+    data: {token: accessToken,
     user: userWithoutPass
 }
   }

@@ -27,3 +27,9 @@ export interface IIssue {
   created_at: Date;
   updated_at: Date;
 }
+
+interface IssueQuery {
+  sort?: "newest" | "oldest";
+  type?: "bug" | "feature_request";
+  status?: "open" | "in_progress" | "resolved";
+}
