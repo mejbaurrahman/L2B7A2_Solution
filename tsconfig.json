@@ -4,10 +4,12 @@
     // File Layout
     "rootDir": "./src",
     "outDir": "./dist",
+     "module": "NodeNext",
+    "moduleResolution": "NodeNext",
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "module": "esnext",
+   
     "target": "esnext",
     "types": ["node"],
     // For nodejs:
@@ -40,5 +42,8 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true
-  }
+  },
+  "include": ["src/**/*"],
+
+ "exclude": []
 }
